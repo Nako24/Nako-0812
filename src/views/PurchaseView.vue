@@ -129,7 +129,7 @@ export default {
         // ポップアップは2秒後に消える
         setTimeout(() => {
           this.showPopup = false;
-        }, 2000);
+        }, 3000);
       }
     }
   }

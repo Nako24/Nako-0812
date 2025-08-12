@@ -38,7 +38,8 @@
 
             <!-- カート追加ボタンを表示 -->
             <v-list-item-action>
-              <v-btn small color="primary" @click="addToCart(item)">
+              <v-btn small color="#F8BBD0" @click="addToCart(item)">
+                <v-icon left>mdi-cart-plus</v-icon>
                 追加
               </v-btn>
             </v-list-item-action>
@@ -77,30 +78,10 @@
             addToCart(product) {
                 this.$store.commit('product/addToCart', product); // 名前空間の変更
             }
-        }
-    }
-</script>
-
-<script>
-    export default {
-        computed: {
-            
-            // VueXのstateから商品リストを取得
-            products() {
-                return this.$store.state.product.products; // 名前空間の変更
-            },
-            
-            // getterから合計金額を取得
-            totalPrice() {
-                return this.$store.getters['product/totalPrice']; // 名前空間の変更
-            }
         },
-
-        methods: {
-            // ボタン押下でmutationをcommitする
-            addToCart(product) {
-                this.$store.commit('product/addToCart', product); // 名前空間の変更
-            }
+        mounted() {
+            // APIから商品一覧を取得
+            this.$store.dispatch('product/fetchProducts');
         }
     }
 </script>

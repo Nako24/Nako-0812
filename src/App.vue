@@ -2,7 +2,7 @@
   <v-app>
     <v-app-bar
       app
-      color="primary"
+      color="#29B6F6"
       dark
     >
       <div class="d-flex align-center">
@@ -27,7 +27,7 @@
 
       <v-spacer></v-spacer>
       <v-btn text to="/" tag="router-link">Home</v-btn>
-      <v-btn text to="/about" tag="router-link">About</v-btn>
+      <v-btn text to="/about" tag="router-link">登録</v-btn>
       <v-btn text to="/purchase" tag="router-link">購入</v-btn> <!-- 購入ビューを追加 -->
 
       <v-btn

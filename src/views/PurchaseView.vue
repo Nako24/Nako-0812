@@ -38,17 +38,18 @@
 
         <!-- 購入ボタン：購入処理中はローディング表示、商品がない時は非活性 -->
         <v-btn
-          color="success"
+          color="#F8BBD0"
           @click="purchase"
           :loading="loading"
           :disabled="loading || productsInCart.length === 0"
-        >
+        ><v-icon left>mdi-cart</v-icon>
           購入する
         </v-btn>
 
         <!-- 購入完了時に表示するポップアップメッセージ -->
         <v-alert
           v-if="showPopup"
+          color="#F8BBD0"
           type="success"
           class="mt-6"
           border="left"

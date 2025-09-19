@@ -1,87 +1,114 @@
 <template>
   <!-- 画面全体のレイアウトコンテナ -->
   <v-container>
-    
-    <!-- 中央揃え -->
-    <v-row justify="center">
-      
-      <!-- 幅を指定したカラム：モバイルで全幅、タブレットサイズ以上で幅6 -->
-      <v-col cols="12" md="6">
+
+    <!-- 商品カードを表示 -->
+    <v-row>
+      <v-col
+        v-for="item in products"
+        :key="item.product_id"
+        cols="12"
+        sm="6"
+        md="4">
         
-        <!-- タイトル表示 -->
-        <h2 class="text-h5 font-weight-bold text-center mb-4">
-          商品一覧
-        </h2>
+        <v-card>
+          <!-- 商品画像 -->
+          <v-img
+            :src="item.product_image"
+            height="300px"
+            cover
+            @click="openDescription(item)"
+          ></v-img>
 
-        <!-- 商品リストを表示する Vuetify のリストコンポーネント -->
-        <v-list
-          class="text-center d-flex flex-column align-center"
-          two-line
-          dense
-        >
-          <!-- 商品データを1件ずつ表示 -->
-          <v-list-item
-            v-for="item in products"
-            :key="item.id"
-          >
-            <!-- 商品情報を表示するブロック -->
-            <v-list-item-content>
-              
-              <!-- 商品名 -->
-              <v-list-item-title>{{ item.name }}</v-list-item-title>
-              
-              <!-- 価格と数量を表示 -->
-              <v-list-item-subtitle>
-                {{ item.price }}円 / {{ item.quantity }}個
-              </v-list-item-subtitle>
-            </v-list-item-content>
+          <!-- 商品情報 -->
+          <v-card-title class="text-wrap">{{ item.product_name }}</v-card-title>
+          <v-card-subtitle class="text-wrap px-4">{{ item.price }}円,
+            <span :class="{ 'red--text': item.status === '売り切れ' }">{{ item.status }}</span>
+          </v-card-subtitle>
 
-            <!-- カート追加ボタンを表示 -->
-            <v-list-item-action>
-              <v-btn small color="#F8BBD0" @click="addToCart(item)">
-                <v-icon left>mdi-cart-plus</v-icon>
-                追加
-              </v-btn>
-            </v-list-item-action>
-
-          </v-list-item>
-        </v-list>
-
-        <!-- 合計金額を表示 -->
-        <v-divider class="my-4"></v-divider>
-        <p class="text-subtitle-1 font-weight-bold text-center">
-          合計金額：{{ totalPrice }}円
-        </p>
-
+          <!-- カート追加ボタン -->
+          <v-card-actions class="d-flex justify-center">
+            <v-btn
+              block color="primary"
+              @click="addToCart(item)"
+              :disabled="item.status === '売り切れ'">
+              <v-icon left>mdi-cart-plus</v-icon>
+              追加
+            </v-btn>
+          </v-card-actions>
+        </v-card>
       </v-col>
     </v-row>
+
+     <!-- 商品詳細ダイアログ -->
+    <v-dialog v-model="dialog" max-width="500">
+      <v-card>
+        <!-- 商品画像 -->
+        <v-img
+          v-if="selectedProduct"
+          :src="selectedProduct.product_image"
+          height="300px"
+          cover
+        ></v-img>
+        <v-card-title>{{ selectedProduct?.product_name }}</v-card-title>
+        <v-card-text>
+          {{ selectedProduct?.product_description }}
+          <br>
+          <small class="grey--text">
+            カテゴリ：{{ selectedProduct?.category }}
+          </small>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn text @click="dialog = false">閉じる</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
 <script>
     export default {
+        data() {
+          return {
+            dialog: false,           // ダイアログの開閉
+            selectedProduct: null,   // クリックされた商品情報
+          }
+        },
         computed: {
             
-            // VueXのstateから商品リストを取得
+            // ストアのstateからproductsの中身を取得
             products() {
-                return this.$store.state.product.products; // 名前空間の変更
+                return this.$store.state.product.products;
             },
             
-            // getterから合計金額を取得
+            // ストアのgettersからtotalpriceの処理結果を取得
             totalPrice() {
-                return this.$store.getters['product/totalPrice']; // 名前空間の変更
+                return this.$store.getters['product/totalPrice'];
             }
         },
 
         methods: {
-            // ボタン押下でmutationをcommitする
+            // ストアのmutationのaddToCartを呼び出す処理
             addToCart(product) {
-                this.$store.commit('product/addToCart', product); // 名前空間の変更
-            }
-        },
-        mounted() {
+                this.$store.commit('product/addToCart', product); 
+                this.$router.push('/purchase'); //購入ページへ遷移
+            },
+            
             // APIから商品一覧を取得
-            this.$store.dispatch('product/fetchProducts');
+            selectProducts() {
+              this.$store.dispatch('product/selectProducts');
+            },
+
+            openDescription(product) {
+              this.selectedProduct = product;
+              this.dialog = true;
+            }
+
+        },
+        // ページ表示時に商品一覧を取得
+        mounted() {
+          this.selectProducts();
         }
     }
 </script>

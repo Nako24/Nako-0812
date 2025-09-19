@@ -1,11 +1,16 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import product from './modules/product' // 商品管理モジュールをインポート
+import accountM from './modules/accountM'
+import product from './modules/product' 
+
 
 Vue.use(Vuex)
 
+//モジュールの登録
 export default new Vuex.Store({
+
   modules: {
-    product // productモジュールを登録
+    accountM, 
+    product   
   }
 })

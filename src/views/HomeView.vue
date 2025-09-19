@@ -8,7 +8,7 @@
   import ProductList from '@/components/ProductList.vue' //ProductList.vueをインポート
 
   export default {
-    name: 'HomeView',
+    name: 'ProductList',
 
     components: {
       ProductList,
